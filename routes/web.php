@@ -19,4 +19,11 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::prefix('/home')->middleware('auth')->group(function () {
+    Route::get('/', 'HomeController@index')->name('home');
+    Route::post('/user', 'HomeController@update')->name('user.update');
+    Route::post('/note', 'NoteController@store')->name('note.store');
+    Route::post('/note/{id}', 'NoteController@update')->name('note.update');
+    Route::get('/note/{id}', 'NoteController@status')->name('note.update');
+    Route::delete('/note/{id}', 'NoteController@destruct')->name('note.destruct');
+});

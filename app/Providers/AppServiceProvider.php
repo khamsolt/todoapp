@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\NoteContract as NoteRepository;
+use App\Repositories\NoteEloquentRepository;
+use App\Services\Contracts\NoteContract as NoteServiceContract;
+use App\Services\NoteService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(NoteRepository::class, NoteEloquentRepository::class);
+        $this->app->bind(NoteServiceContract::class, NoteService::class);
     }
 
     /**
