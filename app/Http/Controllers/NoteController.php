@@ -12,6 +12,7 @@ class NoteController extends Controller
 {
     /** @var NoteServiceContract */
     private $service;
+    /** @var AuthManager */
     private $auth;
 
     /**
@@ -33,7 +34,7 @@ class NoteController extends Controller
      */
     public function store(NoteCreate $request)
     {
-        $this->service->create($request->validated());
+        $this->service->create($request->validated(), $this->auth->guard()->id());
         return redirect()->route('home');
     }
 
@@ -46,7 +47,7 @@ class NoteController extends Controller
      */
     public function update(NoteCreate $request, int $id)
     {
-        $this->service->update($request->validated(), $id);
+        $this->service->update($request->validated(), $this->auth->guard()->id(), $id);
         return redirect()->route('home');
     }
 
@@ -57,7 +58,7 @@ class NoteController extends Controller
      */
     public function status(NoteStatusCheck $request, int $id)
     {
-        $this->service->update($request->validated(), $id);
+        $this->service->update($request->validated(), $this->auth->guard()->id(), $id);
         return redirect()->route('home');
     }
 
@@ -69,7 +70,7 @@ class NoteController extends Controller
      */
     public function destruct(int $id)
     {
-        $this->service->delete($id);
+        $this->service->delete($this->auth->guard()->id(), $id);
         return redirect()->route('home');
     }
 }

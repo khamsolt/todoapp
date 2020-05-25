@@ -8,6 +8,7 @@ use App\Models\Note;
 use App\Repositories\Contracts\NoteContract as NoteRepository;
 use App\Services\Contracts\NoteContract;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Throwable;
 
@@ -34,52 +35,61 @@ class NoteService implements NoteContract
     }
 
     /**
+     * @param int $userId
      * @return Collection
      */
-    public function all(): Collection
+    public function all(int $userId): Collection
     {
-        return $this->repository->findFromUserWhereId($this->authManager->guard()->id());
+        return $this->repository->findFromUserWhereId($userId);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $noteId
+     * @return Note
+     * @throws ModelNotFoundException
+     */
+    public function find(int $userId, int $noteId): Note
+    {
+        return $this->repository->findFromUserWhereNoteId($userId, $noteId);
     }
 
     /**
      * @param array $data
+     * @param int $userId
      * @return Note
      * @throws Throwable
      */
-    public function create(array $data): Note
+    public function create(array $data, int $userId): Note
     {
         $note = Note::make($data);
         $note->user()
-            ->associate($this->authManager->guard()->user());
+            ->associate($userId);
         $note->saveOrFail();
         return $note;
     }
 
     /**
      * @param array $data
-     * @param int $id
+     * @param int $userId
+     * @param int $noteId
      * @return bool
      */
-    public function update(array $data, int $id): bool
+    public function update(array $data, int $userId, int $noteId): bool
     {
-        $note = $this->repository->findFromUserWhereNoteId($this->authManager->guard()->id(), $id);
-        try {
-            //instead update method
-            return $note->fill($data)->saveOrFail();
-        } catch (Throwable $e) {
-            //TODO error logic
-        }
-        return false;
+        $note = $this->repository->findFromUserWhereNoteId($userId, $noteId);
+        return $note->fill($data)->saveOrFail();
     }
 
     /**
+     * @param int $userId
      * @param int $id
      * @return bool
      */
-    public function delete(int $id): bool
+    public function delete(int $userId, int $id): bool
     {
         try {
-            return $this->repository->findFromUserWhereNoteId($this->authManager->guard()->id(), $id)->delete();
+            return $this->repository->findFromUserWhereNoteId($userId, $id)->delete();
         } catch (\Exception $e) {
             // TODO
         }

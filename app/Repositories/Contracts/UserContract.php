@@ -8,5 +8,5 @@ use App\Models\User;
 
 interface UserContract extends RepositoryContract
 {
-    public function findFromUserWhereNoteId(int $id): User;
+    public function findFromUserWhereNoteId(int $userId, int $noteId): User;
 }
