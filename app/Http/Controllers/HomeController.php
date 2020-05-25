@@ -37,7 +37,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $notes = jsonEncode($this->noteService->all());
+        $notes = jsonEncode($this->noteService->all($this->auth->guard()->id()));
         $user = jsonEncode($this->auth->guard()->user());
         return view('home', ['notes' => $notes, 'user' => $user]);
     }

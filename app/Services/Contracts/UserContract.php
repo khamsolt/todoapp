@@ -6,5 +6,5 @@ namespace App\Services\Contracts;
 
 interface UserContract
 {
-    public function update(array $data, int $id): bool;
+    public function update(array $data,int $userId, int $noteId): bool;
 }

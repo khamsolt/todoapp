@@ -23,13 +23,14 @@ class UserService implements UserContract
 
     /**
      * @param array $data
-     * @param int $id
+     * @param int $userId
+     * @param int $noteId
      * @return bool
      * @throws Throwable
      */
-    public function update(array $data, int $id): bool
+    public function update(array $data,int $userId, int $noteId): bool
     {
-        $user = $this->repository->findFromUserWhereNoteId($id);
+        $user = $this->repository->findFromUserWhereNoteId($userId, $noteId);
         return $user->fill($data)->saveOrFail();
     }
 }
